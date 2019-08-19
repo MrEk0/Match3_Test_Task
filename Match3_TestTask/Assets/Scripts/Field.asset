@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3bdeb75426422b4da94b04e0b2c8754, type: 3}
   m_Name: Field
   m_EditorClassIdentifier: 
-  height: 10
-  width: 12
+  height: 8
+  width: 8
   tiles:
   - {fileID: 8838606073406429174, guid: d3055c7391468c644acf82ae5ccdfeb2, type: 3}
   - {fileID: 7646645794395423511, guid: 24dd295a7cea793428cbcd5dff46b151, type: 3}
   - {fileID: 6561157092697485222, guid: 1645e0953d98d6c4fad8f2b2304b0b14, type: 3}
-  - {fileID: 6866523114234003616, guid: dacdc50cede00a1488b4205af2832a4e, type: 3}
   - {fileID: 3210351298576489238, guid: 1652575686e798143b4a4f9184ff0c89, type: 3}
+  - {fileID: 6866523114234003616, guid: dacdc50cede00a1488b4205af2832a4e, type: 3}
   - {fileID: 5477487908522013707, guid: d2a974dcbf82f2b458cb8be4c56b870e, type: 3}

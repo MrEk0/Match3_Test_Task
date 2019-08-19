@@ -8,8 +8,8 @@ public class BoardGenerator : MonoBehaviour
 
     List<GameObject> tiles;
     Vector2 tileSize;
-    float boardHeight;
-    float boardWidth;
+    int boardHeight;
+    int boardWidth;
     float startPositionX;
     float startPositionY;
 
@@ -32,14 +32,40 @@ public class BoardGenerator : MonoBehaviour
 
     private void GenerateBoard()
     {
-        for (float i = 0; i < boardWidth; i++)
+        GameObject[] leftColumn = new GameObject[boardHeight];
+        GameObject belowTile = null;
+
+        for (int i = 0; i < boardWidth; i++)
         {
-            for (float y = 0; y < boardHeight; y++)
+            for (int y = 0; y < boardHeight; y++)
             {
-                int nextTileIndex = Random.Range(0, tiles.Count-1);
-                GameObject newTile= Instantiate(tiles[nextTileIndex], new Vector3(startPositionX + (tileSize.x * i), startPositionY + (tileSize.y * y)),
-                    transform.rotation);
-                newTile.transform.parent = transform;
+                //List<GameObject> possibleTiles = new List<GameObject>();
+                //possibleTiles.AddRange(tiles);
+
+                //int nextTileIndex = Random.Range(0, tiles.Count);
+                //GameObject newTile = Instantiate(tiles[nextTileIndex], new Vector3(startPositionX + (tileSize.x * i), startPositionY + (tileSize.y * y)),
+                //    transform.rotation);
+                //newTile.transform.parent = transform;
+
+                List<GameObject> possibleTiles = new List<GameObject>();
+                possibleTiles.AddRange(tiles);
+                possibleTiles.Remove(leftColumn[y]);
+                possibleTiles.Remove(belowTile);
+
+                int replaceTileIndex = Random.Range(0, possibleTiles.Count);
+                GameObject repTile = possibleTiles[replaceTileIndex];
+                GameObject replaceTile = Instantiate(repTile, new Vector3(startPositionX + (tileSize.x * i), startPositionY + (tileSize.y * y)),
+                   transform.rotation);
+                //newTile.transform.parent = transform;
+                //Debug.Log(possibleTiles.Count);
+                //Debug.Log("new    "+newTile);
+                //newTile = repTile;
+                //Debug.Log(newTile);
+                //Debug.Log("replace    "+possibleTiles[replaceTileIndex]);
+                //Destroy(newTile);
+
+                leftColumn[y] = repTile;
+                belowTile = repTile;
             }
         }
     }
