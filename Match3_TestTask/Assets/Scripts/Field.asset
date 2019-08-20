@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3bdeb75426422b4da94b04e0b2c8754, type: 3}
   m_Name: Field
   m_EditorClassIdentifier: 
-  height: 8
-  width: 8
+  height: 10
+  width: 12
   tiles:
   - {fileID: 8838606073406429174, guid: d3055c7391468c644acf82ae5ccdfeb2, type: 3}
   - {fileID: 7646645794395423511, guid: 24dd295a7cea793428cbcd5dff46b151, type: 3}
