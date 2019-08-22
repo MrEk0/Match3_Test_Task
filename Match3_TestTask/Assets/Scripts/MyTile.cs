@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,8 +10,7 @@ public class MyTile : MonoBehaviour
     SpriteRenderer renderer=null;
     static MyTile previousTile = null;// to be able to see selected tile from previousScripts
     bool isSelected=false;
-
-    private Vector2[] adjacentDirections = new Vector2[] { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
+    bool matchFound = false;
 
     private void Awake()
     {
@@ -35,6 +35,7 @@ public class MyTile : MonoBehaviour
                 {
                     Swap(previousTile.renderer);
                     previousTile.Deselect();
+                    RemoveMatched();
                 }
 
                 else
@@ -97,5 +98,37 @@ public class MyTile : MonoBehaviour
         surTiles.Add(GetNextTile(Vector2.right));
 
         return surTiles;
+    }
+
+    private List<GameObject> FindMatch(Vector2 direction)
+    {
+        List<GameObject> matchingTiles = new List<GameObject>();
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction);
+
+        while(hit.collider!=null && 
+            hit.collider/*.gameObject*/.GetComponent<SpriteRenderer>().sprite==renderer.sprite)//hlllkjjhiohhhlhoih
+        {
+            matchingTiles.Add(hit.collider.gameObject);
+            hit = Physics2D.Raycast(hit.collider.transform.position, direction);//hit from match to the next tile
+        }
+        return matchingTiles;
+    }
+
+    private void RemoveMatched()
+    {
+        List<GameObject> tilesToRemove = new List<GameObject>();
+
+        tilesToRemove.AddRange(FindMatch(Vector2.up));
+        tilesToRemove.AddRange(FindMatch(Vector2.down));
+        tilesToRemove.AddRange(FindMatch(Vector2.left));
+        tilesToRemove.AddRange(FindMatch(Vector2.right));
+
+        if(tilesToRemove.Count>=2)
+        {
+            for(int i=0; i<tilesToRemove.Count; i++)
+            {
+                Destroy(tilesToRemove[i]);
+            }
+        }
     }
 }
