@@ -7,6 +7,7 @@ public class BoardGenerator : MonoBehaviour
     [SerializeField] FieldSettings fieldSettings;
 
     List<GameObject> tiles;
+    GameObject[,] allBoardTiles;//fsfsfsdf
     Vector2 tileSize;
     int boardHeight;
     int boardWidth;
@@ -17,6 +18,7 @@ public class BoardGenerator : MonoBehaviour
     {
         tiles = new List<GameObject>();
         tiles = fieldSettings.GetTiles();
+        allBoardTiles = new GameObject[fieldSettings.GetWidth(), fieldSettings.GetHeight()];//fdsfdsfsdf
         boardHeight = fieldSettings.GetHeight();
         boardWidth = fieldSettings.GetWidth();
         startPositionX = transform.position.x;
@@ -39,33 +41,38 @@ public class BoardGenerator : MonoBehaviour
         {
             for (int y = 0; y < boardHeight; y++)
             {
-                //List<GameObject> possibleTiles = new List<GameObject>();
-                //possibleTiles.AddRange(tiles);
-
-                //int nextTileIndex = Random.Range(0, tiles.Count);
-                //GameObject newTile = Instantiate(tiles[nextTileIndex], new Vector3(startPositionX + (tileSize.x * i), startPositionY + (tileSize.y * y)),
-                //    transform.rotation);
-                //newTile.transform.parent = transform;
-
                 List<GameObject> possibleTiles = new List<GameObject>();
                 possibleTiles.AddRange(tiles);
                 possibleTiles.Remove(leftColumn[y]);
                 possibleTiles.Remove(belowTile);
 
                 int replaceTileIndex = Random.Range(0, possibleTiles.Count);
-                GameObject repTile = possibleTiles[replaceTileIndex];
+                GameObject repTile = possibleTiles[replaceTileIndex];// to prevent the same tile and matches at the begining
                 GameObject replaceTile = Instantiate(repTile, new Vector3(startPositionX + (tileSize.x * i), startPositionY + (tileSize.y * y)),
                    transform.rotation);
-                //newTile.transform.parent = transform;
-                //Debug.Log(possibleTiles.Count);
-                //Debug.Log("new    "+newTile);
-                //newTile = repTile;
-                //Debug.Log(newTile);
-                //Debug.Log("replace    "+possibleTiles[replaceTileIndex]);
-                //Destroy(newTile);
+                allBoardTiles[i, y] = replaceTile; //fsfsdfds
+                replaceTile.transform.parent = transform;
 
                 leftColumn[y] = repTile;
                 belowTile = repTile;
+            }
+        }
+    }
+
+    public void FindEmptySpace()
+    {
+        List<GameObject> emptyTiles = new List<GameObject>();
+
+        for (int x = 0; x < boardWidth; x++)
+        {
+            for (int y = 0; y < boardHeight; y++)
+            {
+                if(allBoardTiles[x,y]==null)
+                {
+                    GameObject newTile= Instantiate(tiles[1], new Vector3(startPositionX + (tileSize.x * x), startPositionY + (tileSize.y * y)),
+                        transform.rotation);
+                    Debug.Log("null");
+                }
             }
         }
     }

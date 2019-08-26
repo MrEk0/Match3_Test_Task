@@ -8,12 +8,14 @@ public class MyTile : MonoBehaviour
     [SerializeField] Color selectedColor;
 
     SpriteRenderer renderer=null;
+    BoardGenerator board = null;
     static MyTile previousTile = null;// to be able to see selected tile from previousScripts
     bool isSelected=false;
     bool matchFound = false;
 
     private void Awake()
     {
+        board = FindObjectOfType<BoardGenerator>();
         renderer = GetComponent<SpriteRenderer>();
     }
 
@@ -31,11 +33,13 @@ public class MyTile : MonoBehaviour
             }
             else
             {
-                if (GetSurroundingTiles().Contains(previousTile.gameObject))
+                if (GetSurroundingTiles().Contains(previousTile.gameObject))//check if we hit the nearest tile
                 {
                     Swap(previousTile.renderer);
+                    //previousTile.RemoveMatched();
                     previousTile.Deselect();
                     RemoveMatched();
+                    board.FindEmptySpace();
                 }
 
                 else
@@ -73,7 +77,8 @@ public class MyTile : MonoBehaviour
 
     private GameObject GetNextTile(Vector2 direction)
     {
-        RaycastHit2D[] hit = Physics2D.RaycastAll(transform.position, direction);
+        float maxDistance = 1f;
+        RaycastHit2D[] hit = Physics2D.RaycastAll(transform.position, direction, maxDistance);
 
         foreach (RaycastHit2D hit2D in hit)
         {
@@ -102,32 +107,47 @@ public class MyTile : MonoBehaviour
 
     private List<GameObject> FindMatch(Vector2 direction)
     {
+        float maxDistance = 2f;
         List<GameObject> matchingTiles = new List<GameObject>();
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction);
+        GameObject prevTile=gameObject;
 
-        while(hit.collider!=null && 
-            hit.collider/*.gameObject*/.GetComponent<SpriteRenderer>().sprite==renderer.sprite)//hlllkjjhiohhhlhoih
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, maxDistance);
+
+        foreach (RaycastHit2D hit in hits)
         {
-            matchingTiles.Add(hit.collider.gameObject);
-            hit = Physics2D.Raycast(hit.collider.transform.position, direction);//hit from match to the next tile
+            if (hit.collider != null && hit.collider.GetComponent<SpriteRenderer>().sprite == renderer.sprite)
+            {
+                if (hit.collider.gameObject != gameObject)
+                {
+                    matchingTiles.Add(gameObject);
+                    matchingTiles.Add(hit.collider.gameObject);
+                    Debug.Log(matchingTiles.Count);
+
+                    prevTile = hit.collider.gameObject;
+                }
+            }
+            else
+            {
+                return matchingTiles;
+            }
         }
         return matchingTiles;
     }
 
     private void RemoveMatched()
     {
-        List<GameObject> tilesToRemove = new List<GameObject>();
+        List<GameObject> tilesToRemoveHeight = new List<GameObject>();
 
-        tilesToRemove.AddRange(FindMatch(Vector2.up));
-        tilesToRemove.AddRange(FindMatch(Vector2.down));
-        tilesToRemove.AddRange(FindMatch(Vector2.left));
-        tilesToRemove.AddRange(FindMatch(Vector2.right));
+        tilesToRemoveHeight.AddRange(FindMatch(Vector2.up));
+        tilesToRemoveHeight.AddRange(FindMatch(Vector2.down));
+        tilesToRemoveHeight.AddRange(FindMatch(Vector2.right));
+        tilesToRemoveHeight.AddRange(FindMatch(Vector2.left));
 
-        if(tilesToRemove.Count>=2)
+        if (tilesToRemoveHeight.Count>=4)
         {
-            for(int i=0; i<tilesToRemove.Count; i++)
+            for(int i=0; i<tilesToRemoveHeight.Count; i++)
             {
-                Destroy(tilesToRemove[i]);
+                tilesToRemoveHeight[i].GetComponent<SpriteRenderer>().sprite = null;
             }
         }
     }
