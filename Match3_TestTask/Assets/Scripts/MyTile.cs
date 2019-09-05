@@ -12,6 +12,8 @@ public class MyTile : MonoBehaviour
     static MyTile previousTile = null;// to be able to see selected tile from previousScripts
     bool isSelected=false;
     bool matchFound = false;
+    int maxTilesToDelete = 5;
+    int minTilesToDelete = 3;
 
     private void Awake()
     {
@@ -36,7 +38,7 @@ public class MyTile : MonoBehaviour
                 if (GetSurroundingTiles().Contains(previousTile.gameObject))//check if we hit the nearest tile
                 {
                     Swap(previousTile.renderer);
-                    //previousTile.RemoveMatched();
+                    previousTile.RemoveMatched();
                     previousTile.Deselect();
                     RemoveMatched();
                     board.FindEmptySpace();
@@ -109,7 +111,6 @@ public class MyTile : MonoBehaviour
     {
         float maxDistance = 2f;
         List<GameObject> matchingTiles = new List<GameObject>();
-        GameObject prevTile=gameObject;
 
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, maxDistance);
 
@@ -121,9 +122,6 @@ public class MyTile : MonoBehaviour
                 {
                     matchingTiles.Add(gameObject);
                     matchingTiles.Add(hit.collider.gameObject);
-                    Debug.Log(matchingTiles.Count);
-
-                    prevTile = hit.collider.gameObject;
                 }
             }
             else
@@ -136,18 +134,37 @@ public class MyTile : MonoBehaviour
 
     private void RemoveMatched()
     {
+        CleanUpVertical();
+        CleanUpHorizontal();
+    }
+
+    private void CleanUpVertical()
+    {
         List<GameObject> tilesToRemoveHeight = new List<GameObject>();
 
         tilesToRemoveHeight.AddRange(FindMatch(Vector2.up));
         tilesToRemoveHeight.AddRange(FindMatch(Vector2.down));
-        tilesToRemoveHeight.AddRange(FindMatch(Vector2.right));
-        tilesToRemoveHeight.AddRange(FindMatch(Vector2.left));
 
-        if (tilesToRemoveHeight.Count>=4)
+        if (tilesToRemoveHeight.Count >= minTilesToDelete)
         {
-            for(int i=0; i<tilesToRemoveHeight.Count; i++)
+            for (int i = 0; i < tilesToRemoveHeight.Count; i++)
             {
                 tilesToRemoveHeight[i].GetComponent<SpriteRenderer>().sprite = null;
+            }
+        }
+    }
+
+    private void CleanUpHorizontal()
+    {
+        List<GameObject> tilesToRemoveWidth = new List<GameObject>();
+
+        tilesToRemoveWidth.AddRange(FindMatch(Vector2.right));
+        tilesToRemoveWidth.AddRange(FindMatch(Vector2.left));
+        if (tilesToRemoveWidth.Count >= minTilesToDelete)
+        {
+            for (int i = 0; i < tilesToRemoveWidth.Count; i++)
+            {
+                tilesToRemoveWidth[i].GetComponent<SpriteRenderer>().sprite = null;
             }
         }
     }

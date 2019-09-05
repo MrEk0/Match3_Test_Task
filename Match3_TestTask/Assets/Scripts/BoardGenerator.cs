@@ -47,14 +47,14 @@ public class BoardGenerator : MonoBehaviour
                 possibleTiles.Remove(belowTile);
 
                 int replaceTileIndex = Random.Range(0, possibleTiles.Count);
-                GameObject repTile = possibleTiles[replaceTileIndex];// to prevent the same tile and matches at the begining
-                GameObject replaceTile = Instantiate(repTile, new Vector3(startPositionX + (tileSize.x * i), startPositionY + (tileSize.y * y)),
+                GameObject psblTile = possibleTiles[replaceTileIndex];// to prevent the same tile and matches at the begining
+                GameObject tile = Instantiate(psblTile, new Vector3(startPositionX + (tileSize.x * i), startPositionY + (tileSize.y * y)),
                    transform.rotation);
-                allBoardTiles[i, y] = replaceTile; //fsfsdfds
-                replaceTile.transform.parent = transform;
+                allBoardTiles[i, y] = tile; //fsfsdfds
+                tile.transform.parent = transform;
 
-                leftColumn[y] = repTile;
-                belowTile = repTile;
+                leftColumn[y] = psblTile;
+                belowTile = psblTile;
             }
         }
     }
