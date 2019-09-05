@@ -67,14 +67,63 @@ public class BoardGenerator : MonoBehaviour
         {
             for (int y = 0; y < boardHeight; y++)
             {
-                if(allBoardTiles[x,y]==null)
+                if(allBoardTiles[x,y].GetComponent<SpriteRenderer>().sprite==null)
                 {
-                    GameObject newTile= Instantiate(tiles[1], new Vector3(startPositionX + (tileSize.x * x), startPositionY + (tileSize.y * y)),
-                        transform.rotation);
-                    Debug.Log("null");
+                    MoveTilesDown(x, y);
                 }
             }
         }
+    }
+
+    private void MoveTilesDown(int xPosition, int yPosition)
+    {
+        List<SpriteRenderer> sprites = new List<SpriteRenderer>();
+        int nullCount = 0;
+
+        for(int y=yPosition; y<boardHeight; y++)
+        {
+            SpriteRenderer sprite = allBoardTiles[xPosition, y].GetComponent<SpriteRenderer>();
+            //if (sprite.sprite == null)
+            //    nullCount++;
+            //else
+            //    sprites.Add(sprite);
+            if (sprite.sprite == null)
+            {
+                nullCount++;
+            }
+
+            sprites.Add(sprite);
+        }
+        //Debug.Log(sprites.Count);
+        //Debug.Log("null  "+nullCount);
+
+        for (int i = 0; i < nullCount; i++)
+        {
+            for (int j = 0; j < sprites.Count - 1; j++)
+            {
+                sprites[j].sprite = sprites[j + 1].sprite;
+                //sprites[j + 1].sprite = null;
+                sprites[j + 1].sprite = GenerateNewSprite(xPosition, yPosition);
+            }
+        }
+    }
+
+    private Sprite GenerateNewSprite(int x, int y)
+    {
+        List<Sprite> sprites = new List<Sprite>();
+        foreach (var tile in tiles)
+        {
+            sprites.Add(tile.GetComponent<SpriteRenderer>().sprite);
+        }
+
+        if (x > 0)
+            sprites.Remove(allBoardTiles[x-1, y].GetComponent<SpriteRenderer>().sprite);
+        if (x < boardWidth-1)
+            sprites.Remove(allBoardTiles[x + 1, y].GetComponent<SpriteRenderer>().sprite);
+        if (y > 0)
+            sprites.Remove(allBoardTiles[x, y - 1].GetComponent<SpriteRenderer>().sprite);
+
+        return sprites[Random.Range(0, sprites.Count)];
     }
 
 }
