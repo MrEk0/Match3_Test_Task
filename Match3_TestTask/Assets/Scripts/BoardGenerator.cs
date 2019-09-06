@@ -10,7 +10,7 @@ public class BoardGenerator : MonoBehaviour
 
     List<GameObject> tiles;
     Score score;
-    GameObject[,] allBoardTiles;//fsfsfsdf
+    GameObject[,] allBoardTiles;
     Vector2 tileSize;
     int boardHeight;
     int boardWidth;
@@ -54,7 +54,7 @@ public class BoardGenerator : MonoBehaviour
                 GameObject psblTile = possibleTiles[replaceTileIndex];// to prevent the same tile and matches at the begining
                 GameObject tile = Instantiate(psblTile, new Vector3(startPositionX + (tileSize.x * i), startPositionY + (tileSize.y * y)),
                    transform.rotation);
-                allBoardTiles[i, y] = tile; //fsfsdfds
+                allBoardTiles[i, y] = tile; 
                 tile.transform.parent = transform;
 
                 leftColumn[y] = psblTile;
@@ -64,37 +64,21 @@ public class BoardGenerator : MonoBehaviour
     }
 
     public void FindEmptySpace()
-    //public IEnumerator FindEmptySpace()
     {
-        //List<GameObject> emptyTiles = new List<GameObject>();
-
         for (int x = 0; x < boardWidth; x++)
         {
             for (int y = 0; y < boardHeight; y++)
             {
-                if(allBoardTiles[x,y].GetComponent<SpriteRenderer>().sprite==null)
+                if (allBoardTiles[x, y].GetComponent<SpriteRenderer>().sprite == null)
                 {
-                    //yield return StartCoroutine(MoveTilesDown(x, y));
-                    //break;
-                    //yield return new WaitForSeconds(timeToRefill);
                     MoveTilesDown(x, y);
                 }
             }
         }
-
-        //for (int x = 0; x < boardWidth; x++)
-        //{
-        //    for (int y = 0; y < boardHeight; y++)
-        //    {
-        //        allBoardTiles[x, y].GetComponent<MyTile>().RemoveMatched();
-        //    }
-        //}
     }
 
     private void MoveTilesDown(int xPosition, int yPosition)
-    //private IEnumerator MoveTilesDown(int xPosition, int yPosition)
     {
-        //StartCoroutine(Pause(xPosition, yPosition));
         List<SpriteRenderer> renders = new List<SpriteRenderer>();
         int nullCount = 0;
 
@@ -111,8 +95,6 @@ public class BoardGenerator : MonoBehaviour
 
         for (int i = 0; i < nullCount; i++)
         {
-            //yield return new WaitForSeconds(timeToRefill);
-            //StartCoroutine(Pause());
             score.IncreaseScore(points);
             for (int j = 0; j < renders.Count - 1; j++)
             {
@@ -126,17 +108,7 @@ public class BoardGenerator : MonoBehaviour
             }
         }
 
-        //for (int x = 0; x < boardWidth; x++)
-        //{
-        //    for (int y = 0; y < boardHeight; y++)
-        //    {
-                StartCoroutine(Pause());
-                //allBoardTiles[x, y].GetComponent<MyTile>().RemoveMatched();
-                //MyTile myTile = allBoardTiles[x, y].GetComponent<MyTile>();
-                //StopCoroutine(myTile.RemoveMatched());
-                //StartCoroutine(myTile.RemoveMatched());
-        //    }
-        //}
+        StartCoroutine(Pause());
     }
 
     private Sprite GenerateNewSprite(int x, int y)
@@ -164,7 +136,7 @@ public class BoardGenerator : MonoBehaviour
             for (int y = 0; y < boardHeight; y++)
             {
                 yield return new WaitForSeconds(timeToRefill);
-                allBoardTiles[x, y].GetComponent<MyTile>().RemoveMatched();
+                allBoardTiles[x, y].GetComponent<Tile>().RemoveMatched();
             }
         }
     }

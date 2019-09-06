@@ -3,14 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MyTile : MonoBehaviour
+public class Tile : MonoBehaviour
 {
     [SerializeField] Color selectedColor;
-    //[SerializeField] float timeToRefill = 0.05f;
 
     SpriteRenderer renderer=null;
     BoardGenerator board = null;
-    static MyTile previousTile = null;// to be able to see selected tile from previousScripts
+    static Tile previousTile = null;// to be able to see selected tile from previousScripts
     bool isSelected=false;
     bool matchFound = false;
     int maxTilesToDelete = 5;
@@ -138,8 +137,6 @@ public class MyTile : MonoBehaviour
     {
         CleanUpVertical();
         CleanUpHorizontal();
-        //StopCoroutine(board.FindEmptySpace());
-        //StartCoroutine(board.FindEmptySpace());
         board.FindEmptySpace();
     }
 
