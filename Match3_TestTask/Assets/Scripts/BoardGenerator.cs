@@ -5,8 +5,11 @@ using UnityEngine;
 public class BoardGenerator : MonoBehaviour
 {
     [SerializeField] FieldSettings fieldSettings;
+    [SerializeField] float timeToRefill = 0.05f;
+    [SerializeField] float points = 10f;
 
     List<GameObject> tiles;
+    Score score;
     GameObject[,] allBoardTiles;//fsfsfsdf
     Vector2 tileSize;
     int boardHeight;
@@ -24,6 +27,7 @@ public class BoardGenerator : MonoBehaviour
         startPositionX = transform.position.x;
         startPositionY = transform.position.y;
         tileSize = fieldSettings.GetTileSize();
+        score = FindObjectOfType<Score>();
     }
 
     // Start is called before the first frame update
@@ -60,6 +64,7 @@ public class BoardGenerator : MonoBehaviour
     }
 
     public void FindEmptySpace()
+    //public IEnumerator FindEmptySpace()
     {
         //List<GameObject> emptyTiles = new List<GameObject>();
 
@@ -69,14 +74,17 @@ public class BoardGenerator : MonoBehaviour
             {
                 if(allBoardTiles[x,y].GetComponent<SpriteRenderer>().sprite==null)
                 {
+                    //yield return StartCoroutine(MoveTilesDown(x, y));
+                    //break;
+                    //yield return new WaitForSeconds(timeToRefill);
                     MoveTilesDown(x, y);
                 }
             }
         }
 
-        //for(int x=0; x<boardWidth; x++)
+        //for (int x = 0; x < boardWidth; x++)
         //{
-        //    for(int y=0; y<boardHeight; y++)
+        //    for (int y = 0; y < boardHeight; y++)
         //    {
         //        allBoardTiles[x, y].GetComponent<MyTile>().RemoveMatched();
         //    }
@@ -84,11 +92,13 @@ public class BoardGenerator : MonoBehaviour
     }
 
     private void MoveTilesDown(int xPosition, int yPosition)
+    //private IEnumerator MoveTilesDown(int xPosition, int yPosition)
     {
+        //StartCoroutine(Pause(xPosition, yPosition));
         List<SpriteRenderer> renders = new List<SpriteRenderer>();
         int nullCount = 0;
 
-        for(int y=yPosition; y<boardHeight; y++)
+        for (int y = yPosition; y < boardHeight; y++)
         {
             SpriteRenderer renderer = allBoardTiles[xPosition, y].GetComponent<SpriteRenderer>();
             if (renderer.sprite == null)
@@ -101,6 +111,9 @@ public class BoardGenerator : MonoBehaviour
 
         for (int i = 0; i < nullCount; i++)
         {
+            //yield return new WaitForSeconds(timeToRefill);
+            //StartCoroutine(Pause());
+            score.IncreaseScore(points);
             for (int j = 0; j < renders.Count - 1; j++)
             {
                 renders[j].sprite = renders[j + 1].sprite;
@@ -113,13 +126,17 @@ public class BoardGenerator : MonoBehaviour
             }
         }
 
-        for (int x = 0; x < boardWidth; x++)
-        {
-            for (int y = 0; y < boardHeight; y++)
-            {
-                allBoardTiles[x, y].GetComponent<MyTile>().RemoveMatched();
-            }
-        }
+        //for (int x = 0; x < boardWidth; x++)
+        //{
+        //    for (int y = 0; y < boardHeight; y++)
+        //    {
+                StartCoroutine(Pause());
+                //allBoardTiles[x, y].GetComponent<MyTile>().RemoveMatched();
+                //MyTile myTile = allBoardTiles[x, y].GetComponent<MyTile>();
+                //StopCoroutine(myTile.RemoveMatched());
+                //StartCoroutine(myTile.RemoveMatched());
+        //    }
+        //}
     }
 
     private Sprite GenerateNewSprite(int x, int y)
@@ -138,6 +155,18 @@ public class BoardGenerator : MonoBehaviour
             sprites.Remove(allBoardTiles[x, y - 1].GetComponent<SpriteRenderer>().sprite);
 
         return sprites[Random.Range(0, sprites.Count)];
+    }
+
+    IEnumerator Pause()
+    {
+        for (int x = 0; x < boardWidth; x++)
+        {
+            for (int y = 0; y < boardHeight; y++)
+            {
+                yield return new WaitForSeconds(timeToRefill);
+                allBoardTiles[x, y].GetComponent<MyTile>().RemoveMatched();
+            }
+        }
     }
 
 }

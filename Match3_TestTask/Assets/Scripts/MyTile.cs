@@ -6,6 +6,7 @@ using UnityEngine;
 public class MyTile : MonoBehaviour
 {
     [SerializeField] Color selectedColor;
+    //[SerializeField] float timeToRefill = 0.05f;
 
     SpriteRenderer renderer=null;
     BoardGenerator board = null;
@@ -14,6 +15,8 @@ public class MyTile : MonoBehaviour
     bool matchFound = false;
     int maxTilesToDelete = 5;
     int minTilesToDelete = 3;
+
+    private bool isMatched = false;
 
     private void Awake()
     {
@@ -135,6 +138,8 @@ public class MyTile : MonoBehaviour
     {
         CleanUpVertical();
         CleanUpHorizontal();
+        //StopCoroutine(board.FindEmptySpace());
+        //StartCoroutine(board.FindEmptySpace());
         board.FindEmptySpace();
     }
 
