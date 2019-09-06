@@ -41,7 +41,6 @@ public class MyTile : MonoBehaviour
                     previousTile.RemoveMatched();
                     previousTile.Deselect();
                     RemoveMatched();
-                    //board.FindEmptySpace();
                 }
 
                 else
@@ -132,11 +131,11 @@ public class MyTile : MonoBehaviour
         return matchingTiles;
     }
 
-    private void RemoveMatched()
+    public void RemoveMatched()
     {
         CleanUpVertical();
         CleanUpHorizontal();
-        //board.FindEmptySpace();
+        board.FindEmptySpace();
     }
 
     private void CleanUpVertical()
@@ -153,7 +152,6 @@ public class MyTile : MonoBehaviour
                 tilesToRemoveHeight[i].GetComponent<SpriteRenderer>().sprite = null;
             }
         }
-        board.FindEmptySpace();
     }
 
     private void CleanUpHorizontal()
@@ -169,6 +167,5 @@ public class MyTile : MonoBehaviour
                 tilesToRemoveWidth[i].GetComponent<SpriteRenderer>().sprite = null;
             }
         }
-        board.FindEmptySpace();
     }
 }

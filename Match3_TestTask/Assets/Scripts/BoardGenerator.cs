@@ -61,7 +61,7 @@ public class BoardGenerator : MonoBehaviour
 
     public void FindEmptySpace()
     {
-        List<GameObject> emptyTiles = new List<GameObject>();
+        //List<GameObject> emptyTiles = new List<GameObject>();
 
         for (int x = 0; x < boardWidth; x++)
         {
@@ -73,37 +73,51 @@ public class BoardGenerator : MonoBehaviour
                 }
             }
         }
+
+        //for(int x=0; x<boardWidth; x++)
+        //{
+        //    for(int y=0; y<boardHeight; y++)
+        //    {
+        //        allBoardTiles[x, y].GetComponent<MyTile>().RemoveMatched();
+        //    }
+        //}
     }
 
     private void MoveTilesDown(int xPosition, int yPosition)
     {
-        List<SpriteRenderer> sprites = new List<SpriteRenderer>();
+        List<SpriteRenderer> renders = new List<SpriteRenderer>();
         int nullCount = 0;
 
         for(int y=yPosition; y<boardHeight; y++)
         {
-            SpriteRenderer sprite = allBoardTiles[xPosition, y].GetComponent<SpriteRenderer>();
-            //if (sprite.sprite == null)
-            //    nullCount++;
-            //else
-            //    sprites.Add(sprite);
-            if (sprite.sprite == null)
+            SpriteRenderer renderer = allBoardTiles[xPosition, y].GetComponent<SpriteRenderer>();
+            if (renderer.sprite == null)
             {
                 nullCount++;
             }
 
-            sprites.Add(sprite);
+            renders.Add(renderer);
         }
-        //Debug.Log(sprites.Count);
-        //Debug.Log("null  "+nullCount);
 
         for (int i = 0; i < nullCount; i++)
         {
-            for (int j = 0; j < sprites.Count - 1; j++)
+            for (int j = 0; j < renders.Count - 1; j++)
             {
-                sprites[j].sprite = sprites[j + 1].sprite;
-                //sprites[j + 1].sprite = null;
-                sprites[j + 1].sprite = GenerateNewSprite(xPosition, yPosition);
+                renders[j].sprite = renders[j + 1].sprite;
+                renders[j + 1].sprite = GenerateNewSprite(xPosition, yPosition);
+            }
+
+            if (renders.Count - 1 == 0)
+            {
+                renders[0].sprite = GenerateNewSprite(xPosition, yPosition);//to refill the highest position
+            }
+        }
+
+        for (int x = 0; x < boardWidth; x++)
+        {
+            for (int y = 0; y < boardHeight; y++)
+            {
+                allBoardTiles[x, y].GetComponent<MyTile>().RemoveMatched();
             }
         }
     }
